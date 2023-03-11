@@ -23,6 +23,11 @@ export class IssueReportComponent {
       priority: ['', Validators.required],
       type: ['', Validators.required]
     });
+
+    this.issueForm.controls['title'].valueChanges.subscribe((
+      title: string) => {
+        this.suggestions = this.issueService.getSuggestions(title);
+    });
   }
 
   addIssue() {
