@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { Issue } from '../issue';
 import { IssuesService } from '../issues.service';
 
 @Component({
@@ -9,8 +10,11 @@ import { IssuesService } from '../issues.service';
 })
 export class IssueReportComponent {
   issueForm: FormGroup | undefined;
+  suggestions: Issue[] = [];
   
   constructor(private builder: FormBuilder, private issueService: IssuesService) { }
+  
+  @Output() formClose = new EventEmitter();
   
   ngOnInit(): void {
     this.issueForm = this.builder.group({
@@ -23,5 +27,6 @@ export class IssueReportComponent {
 
   addIssue() {
     this.issueService.createIssue(this.issueForm?.value);
+    this.formClose.emit();
   }
 }
