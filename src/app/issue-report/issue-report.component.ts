@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Output } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Issue } from '../issue';
 import { IssuesService } from '../issues.service';
 
@@ -11,21 +11,26 @@ import { IssuesService } from '../issues.service';
 export class IssueReportComponent {
   issueForm: FormGroup | undefined;
   suggestions: Issue[] = [];
-  
+
   constructor(private builder: FormBuilder, private issueService: IssuesService) { }
   
   @Output() formClose = new EventEmitter();
   
   ngOnInit(): void {
     this.issueForm = this.builder.group({
-      title: [''],
+      title: ['', Validators.required],
       description: [''],
-      priority: [''],
-      type: ['']
+      priority: ['', Validators.required],
+      type: ['', Validators.required]
     });
   }
 
   addIssue() {
+    if (this.issueForm && this.issueForm.invalid) {
+      this.issueForm.markAllAsTouched();
+      return;
+    }
+  
     this.issueService.createIssue(this.issueForm?.value);
     this.formClose.emit();
   }
